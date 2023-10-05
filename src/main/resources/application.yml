@@ -1,0 +1,97 @@
+### Defaults
+default:
+  poll:
+    size: 100
+  rabbitmq:
+    concurrency: 3-5
+    poll:
+      max-length: 10
+    ttl: 300000
+    retry:
+      max-attempts: 2
+      interval: 20s
+  timeout: 10m
+
+### Spring
+spring:
+  application:
+    name: images
+  cors:
+    allow-credentials: true
+    allowed-methods: GET, POST, OPTIONS
+    allowed-origins:
+#  data:
+#    mongodb:
+#      database: images
+#      host:
+#      password:
+#      username: images
+  rabbitmq:
+    exchange:
+      image: images
+      image-dead-letter: images-dead-letter-exchange
+      scheduler: scheduler
+      webhook: webhooks
+      webhook-dead-letter: webhooks-dead-letter-exchange
+    queue:
+      default-images:
+        name: default-images
+        concurrency: ${default.rabbitmq.concurrency}
+        ttl: ${default.rabbitmq.ttl}
+        retry:
+          max-attempts: ${default.rabbitmq.retry.max-attempts}
+          interval: ${default.rabbitmq.retry.interval}
+      external-images:
+        name: external-images
+        concurrency: ${default.rabbitmq.concurrency}
+        ttl: ${default.rabbitmq.ttl}
+        retry:
+          max-attempts: ${default.rabbitmq.retry.max-attempts}
+          interval: ${default.rabbitmq.retry.interval}
+      image-poll-tick:
+        name: image-poll-tick
+        max-length: ${default.rabbitmq.poll.max-length}
+      image-gc-tick:
+        name: image-gc-tick
+        max-length: ${default.rabbitmq.poll.max-length}
+      webhooks:
+        name: webhooks
+        concurrency: ${default.rabbitmq.concurrency}
+        ttl: ${default.rabbitmq.ttl}
+        retry:
+          max-attempts: ${default.rabbitmq.retry.max-attempts}
+          interval: ${default.rabbitmq.retry.interval}
+      webhook-poll-tick:
+        name: webhook-poll-tick
+        max-length: ${default.rabbitmq.poll.max-length}
+      webhook-gc-tick:
+        name: webhook-gc-tick
+        max-length: ${default.rabbitmq.poll.max-length}
+    routing-key:
+      default-images: images.default
+      external-images: images.external
+      minute-tick: minute
+      second-tick: second
+      webhooks: webhooks
+  servlet:
+    multipart:
+      max-file-size: 10485760
+
+### Java
+url:
+  connect-timeout: 3000
+  read-timeout: 5000
+
+### App
+image:
+  allowed-types: JPEG, PNG, WEBP
+  poll-size: ${default.poll.size}
+  timeout: ${default.timeout}
+  processor:
+    editable-types: JPEG, PNG
+    tasks: CROP, RESIZE
+
+webhook:
+  poll-size: ${default.poll.size}
+  timeout: ${default.timeout}
+  url: 'http://localhost:8098/test'
