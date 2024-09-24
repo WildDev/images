@@ -22,9 +22,7 @@ ENV RABBIT_PASS=test
 ENV RABBIT_PORT=5672
 ENV SERVER_PORT=8080
 ENV TASKS=CROP,RESIZE
-ENV WEBHOOK_TIMEOUT=10
-ENV WEBHOOK_TRIES=3
-ENV WEBHOOK_TRIES_DISTANCE=10
+ENV WEBHOOK_TIMEOUT=10m
 ENV WEBHOOK_URL=''
 
 COPY --from=0 /target/images.jar /
@@ -34,8 +32,6 @@ ENTRYPOINT java -jar $JAVA_OPTS /images.jar \
  --image.processor.tasks=$TASKS \
  --image.webhook.url=$WEBHOOK_URL \
  --image.webhook.timeout=$WEBHOOK_TIMEOUT \
- --image.webhook.tries=$WEBHOOK_TRIES \
- --image.webhook.tries.distance=$WEBHOOK_TRIES_DISTANCE \
  --server.port=$SERVER_PORT \
  --spring.cors.allowed-origins=$ALLOWED_ORIGINS \
  --spring.data.mongodb.host=$MONGODB_HOST \
