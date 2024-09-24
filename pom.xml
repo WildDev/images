@@ -20,7 +20,7 @@
 
 	<properties>
 		<java.version>20</java.version>
-		<wilddev.lib.version>1.0.0-SNAPSHOT</wilddev.lib.version>
+		<wilddev.lib.version>1.0.0.RELEASE</wilddev.lib.version>
 	</properties>
 
 	<dependencies>
