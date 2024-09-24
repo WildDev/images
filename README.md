@@ -57,7 +57,7 @@ java -jar -Xmx512M target/images.jar \
     --spring.rabbitmq.username=images \
     --spring.rabbitmq.password=test \
     --image.processor.tasks=CROP \
-    --image.webhook.url=http://image-uploader-1:8080/images/webhook
+    --webhook.url=http://image-uploader-1:8080/images/webhook
 ```
 
 > [!WARNING]
