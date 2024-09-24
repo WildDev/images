@@ -19,13 +19,6 @@ spring:
   cors:
     allow-credentials: true
     allowed-methods: GET, POST, OPTIONS
-    allowed-origins:
-#  data:
-#    mongodb:
-#      database: images
-#      host:
-#      password:
-#      username: images
   rabbitmq:
     exchange:
       image: images
@@ -94,4 +87,4 @@ image:
 webhook:
   poll-size: ${default.poll.size}
   timeout: ${default.timeout}
-  url: 'http://localhost:8098/test'
+  url: ''
