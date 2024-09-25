@@ -41,6 +41,7 @@ Runtime stack:
 * Java 20
 * MongoDB 6
 * RabbitMQ 4
+* [rabbitmq-cron](https://github.com/WildDev/rabbitmq-cron)
 
 Checkout the project and build it using `mvn package` command
 
@@ -57,8 +58,11 @@ java -jar -Xmx512M target/images.jar \
     --spring.rabbitmq.username=images \
     --spring.rabbitmq.password=test \
     --image.processor.tasks=CROP \
-    --image.webhook.url=http://image-uploader-1:8080/images/webhook
+    --webhook.url=http://image-uploader-1:8080/images/webhook
 ```
+
+> [!WARNING]
+> Ensure that `rabbitmq-cron` service runs on the same RabbitMQ username and initially was launched first
 
 > [!WARNING]
 > The service is unprotected by default! Ensure the only accessor endpoint is publicly available and your proxy server is properly configured
