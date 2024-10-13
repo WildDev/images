@@ -18,6 +18,7 @@ ENV MONGODB_PORT=27017
 ENV MONGODB_DATABASE=images
 ENV MONGODB_USER=images
 ENV MONGODB_PASS=test
+ENV MONGODB_URI=''
 ENV RABBIT_HOST=rabbitmq
 ENV RABBIT_USER=images
 ENV RABBIT_PASS=test
@@ -42,6 +43,7 @@ ENTRYPOINT java -jar $JAVA_OPTS /images.jar \
  --spring.data.mongodb.database=$MONGODB_DATABASE \
  --spring.data.mongodb.username=$MONGODB_USER \
  --spring.data.mongodb.password=$MONGODB_PASS \
+ --spring.data.mongodb.uri=$MONGODB_URI \
  --spring.rabbitmq.host=$RABBIT_HOST \
  --spring.rabbitmq.port=$RABBIT_PORT \
  --spring.rabbitmq.username=$RABBIT_USER \
