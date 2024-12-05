@@ -1,9 +1,8 @@
 package fun.wilddev.images.config;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import java.time.LocalDateTime;
+import java.text.DateFormat;
 
 import com.fasterxml.jackson.databind.*;
 import org.springframework.context.annotation.*;
@@ -14,12 +13,10 @@ public class JacksonConf {
     @Bean
     public ObjectMapper objectMapper() {
 
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
+                .setDateFormat(DateFormat.getDateTimeInstance());
 
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        objectMapper.configOverride(LocalDateTime.class)
-                .setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd HH:mm:ss"));
 
         return objectMapper;
     }
