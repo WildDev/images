@@ -15,7 +15,7 @@ public interface WebhookRepository extends MongoRepository<Webhook, String> {
     @Update("{ $set: { 'status': ?2 } }")
     long findAndSetExpiredByStatusAndExpiresBefore(WebhookStatus status, LocalDateTime bound, WebhookStatus target);
 
-    @Update("{ $set: { 'status': ?1, 'sent': { $date: ?2 } }")
+    @Update("{ $set: { 'status': ?1, 'sent': { $date: ?2 } } }")
     void findAndSetStatusAndSentById(String id, WebhookStatus status, LocalDateTime sent);
 
     @Update("{ $set: { 'status': ?1 } }")
