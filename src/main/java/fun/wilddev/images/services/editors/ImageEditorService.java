@@ -1,14 +1,15 @@
 package fun.wilddev.images.services.editors;
 
-import fun.wilddev.images.exceptions.images.ImageException;
+import fun.wilddev.images.exceptions.files.FileException;
 import fun.wilddev.images.processors.tasks.SourceImage;
 
 import lombok.extern.slf4j.Slf4j;
 
-import fun.wilddev.images.entities.settings.*;
-import fun.wilddev.images.services.editors.effects.*;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+
+import fun.wilddev.images.entities.settings.*;
+import fun.wilddev.images.services.editors.effects.*;
 
 @Slf4j
 @Service
@@ -25,11 +26,11 @@ public class ImageEditorService {
         this.resizeEditor = new ImageCustomSizeEffectProxy<>(log, resizeEditor);
     }
 
-    public void cropAndStore(@NonNull SourceImage sourceImage, @NonNull CropSize target) throws ImageException {
+    public void cropAndStore(@NonNull SourceImage sourceImage, @NonNull CropSize target) throws FileException {
         cropEditor.accept(sourceImage, target);
     }
 
-    public void resizeAndStore(@NonNull SourceImage sourceImage, @NonNull ResizeSize target) throws ImageException {
+    public void resizeAndStore(@NonNull SourceImage sourceImage, @NonNull ResizeSize target) throws FileException {
         resizeEditor.accept(sourceImage, target);
     }
 }

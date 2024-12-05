@@ -1,7 +1,7 @@
 package fun.wilddev.images.services.editors.effects;
 
 import fun.wilddev.images.entities.settings.ResizeSize;
-import fun.wilddev.images.exceptions.images.ImageException;
+import fun.wilddev.images.exceptions.files.FileException;
 import fun.wilddev.images.processors.tasks.SourceImage;
 import fun.wilddev.images.services.ImageWriterService;
 import fun.wilddev.images.services.editors.tools.ImageResizer;
@@ -49,7 +49,7 @@ public class ImageResizeEffect extends AbstractImageCustomSizeEffect<ResizeSize>
     }
 
     @Override
-    public void accept(@NonNull SourceImage sourceImage, @NonNull Dimension targetDimension) throws ImageException {
+    public void accept(@NonNull SourceImage sourceImage, @NonNull Dimension targetDimension) throws FileException {
         imageWriterService.write(sourceImage, imageResizer.resize(sourceImage.bufferedImage(), targetDimension));
     }
 }

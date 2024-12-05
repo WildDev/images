@@ -1,6 +1,7 @@
 package fun.wilddev.images.services.editors.effects;
 
 import fun.wilddev.images.entities.settings.CropSize;
+import fun.wilddev.images.exceptions.files.FileException;
 import fun.wilddev.images.processors.tasks.SourceImage;
 import fun.wilddev.images.services.ImageWriterService;
 
@@ -85,7 +86,7 @@ public class ImageCropEffect extends AbstractImageCustomSizeEffect<CropSize> {
     }
 
     @Override
-    public void accept(@NonNull SourceImage sourceImage, @NonNull Dimension targetDimension) throws ImageException {
+    public void accept(@NonNull SourceImage sourceImage, @NonNull Dimension targetDimension) throws FileException {
 
         final Dimension sourceDimension = sourceImage.dimension();
         final BufferedImage sourceBufferedImage = sourceImage.bufferedImage();

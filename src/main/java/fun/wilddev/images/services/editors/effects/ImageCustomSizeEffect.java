@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.awt.*;
 
 public interface ImageCustomSizeEffect<T extends AbstractSize>
-        extends ImageExceptionThrowingConsumer<SourceImage, Dimension>, ImageEffect {
+        extends FileExceptionThrowingConsumer<SourceImage, Dimension>, ImageEffect {
 
     Dimension calcTargetDimension(BufferedImage bufferedImage, T targetDimension);
 }
