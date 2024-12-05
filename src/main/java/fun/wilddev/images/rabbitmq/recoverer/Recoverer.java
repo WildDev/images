@@ -1,5 +1,6 @@
 package fun.wilddev.images.rabbitmq.recoverer;
 
+import fun.wilddev.images.rabbitmq.RabbitTrustedPackages;
 import fun.wilddev.images.rabbitmq.data.RefData;
 import fun.wilddev.images.services.FailureSetter;
 
@@ -29,7 +30,7 @@ public abstract class Recoverer<T extends RefData> extends RejectAndDontRequeueR
                         String failureLogMessageTemplate, Class<T> type) {
 
         DefaultJackson2JavaTypeMapper javaTypeMapper = new DefaultJackson2JavaTypeMapper();
-        javaTypeMapper.setTrustedPackages("com.wilddev.image.rabbitmq.data");
+        javaTypeMapper.setTrustedPackages(RabbitTrustedPackages.DATA);
 
         this.log = log;
         this.jackson2JavaTypeMapper = javaTypeMapper;

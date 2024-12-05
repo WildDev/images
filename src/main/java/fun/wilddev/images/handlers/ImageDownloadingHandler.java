@@ -48,12 +48,15 @@ public class ImageDownloadingHandler implements Handler<ExternalImage> {
 
     @Override
     public void handle(@NonNull ExternalImage image) throws RemoteConnectionException,
-            UnsupportedContentTypeException, FileSizeLimitExceededException, FileDownloadingException {
+            UnsupportedContentTypeException, FileException {
 
         URLConnection conn = urlService.getConnection(image.sourceUrl());
         long contentLength = conn.getContentLengthLong();
 
         contentTypeTester.test(conn.getContentType());
+
+        if (contentLength <= 0)
+            throw new FileEmptyException(messageService.getMessage("exception.file.empty"));
 
         if (contentLength > maxFileSize)
             throw new FileSizeLimitExceededException(messageService

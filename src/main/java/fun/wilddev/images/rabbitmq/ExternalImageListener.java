@@ -1,7 +1,5 @@
 package fun.wilddev.images.rabbitmq;
 
-import fun.wilddev.images.exceptions.UnsupportedContentTypeException;
-import fun.wilddev.images.exceptions.files.FileSizeLimitExceededException;
 import fun.wilddev.images.handlers.ImageDownloadingHandler;
 import fun.wilddev.images.models.ExternalImage;
 import fun.wilddev.images.rabbitmq.data.ExternalImageData;
@@ -12,6 +10,9 @@ import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+
+import fun.wilddev.images.exceptions.*;
+import fun.wilddev.images.exceptions.files.*;
 
 @AllArgsConstructor
 @Component
@@ -26,7 +27,7 @@ public class ExternalImageListener {
 
         try {
             imageDownloadingHandler.handle(new ExternalImage(message.getId(), message.getSourceUrl()));
-        } catch (UnsupportedContentTypeException | FileSizeLimitExceededException ex) {
+        } catch (UnsupportedContentTypeException | FileEmptyException | FileSizeLimitExceededException ex) {
             throw new AmqpRejectAndDontRequeueException(ex);
         }
     }
