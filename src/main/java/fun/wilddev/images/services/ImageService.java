@@ -72,12 +72,9 @@ public class ImageService implements Slicer<Image> {
     }
 
     @Transactional
-    public Image add(@NonNull FileMeta fileMeta, @NonNull Dimension dimension) {
-
-        LocalDateTime now = LocalDateTime.now();
-
-        return imageRepository.save(new Image(fileMeta, dimension, ImageStatus.NEW,
-                false, now, futureCalculator.calc(now, timeout)));
+    public Image storeSampleResult(@NonNull FileMeta fileMeta, @NonNull Dimension dimension) {
+        return imageRepository.save(new Image(fileMeta, dimension,
+                ImageStatus.PROCESSED, false, LocalDateTime.now(), null));
     }
 
     @Transactional
