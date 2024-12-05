@@ -31,26 +31,29 @@ public class CustomizedImageService {
     public void store(@NonNull File file, @NonNull Dimension dimension,
                       @NonNull FileMeta fileMeta) throws ImageStorageException {
 
+        final int width = (int) dimension.getWidth();
+        final int height = (int) dimension.getHeight();
+
         String id = null;
 
         try {
-            Image croppedImage = imageService.add(fileMeta, dimension);
-
+            Image croppedImage = imageService.storeSampleResult(fileMeta, dimension);
             id = croppedImage.getId();
 
             gridFsService.store(id, croppedImage.getContentType(), file);
-            imageService.setProcessed(id);
+
+            log.info("{}x{} sample of image {} is processed", width, height, fileMeta.id());
 
         } catch (Exception ex) {
 
             if (id != null) {
 
                 gridFsService.delete(id);
-                log.debug("GridFS file {} is deleted", id);
+                log.warn("GridFS file {} is deleted", id);
             }
 
-            throw new ImageStorageException(messageService.getMessage("exception.image.version.storage.failed",
-                    dimension.getWidth(), dimension.getHeight(), fileMeta.id()), ex);
+            throw new ImageStorageException(messageService
+                    .getMessage("exception.image.version.storage.failed", width, height, fileMeta.id()), ex);
         }
     }
 }
