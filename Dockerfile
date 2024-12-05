@@ -23,11 +23,13 @@ ENV RABBIT_HOST=rabbitmq
 ENV RABBIT_USER=images
 ENV RABBIT_PASS=test
 ENV RABBIT_PORT=5672
+ENV RABBIT_VHOST=/
 ENV SERVER_PORT=8080
 ENV TASKS=CROP,RESIZE
 ENV WEBHOOK_POLL_SIZE=100
 ENV WEBHOOK_TIMEOUT=10m
 ENV WEBHOOK_URL=''
+ENV EXTRA_ARGS=''
 
 COPY --from=0 /target/images.jar /
 
@@ -48,7 +50,9 @@ ENTRYPOINT java -jar $JAVA_OPTS /images.jar \
  --spring.rabbitmq.port=$RABBIT_PORT \
  --spring.rabbitmq.username=$RABBIT_USER \
  --spring.rabbitmq.password=$RABBIT_PASS \
+ --spring.rabbitmq.virtual-host=$RABBIT_VHOST \
  --spring.servlet.multipart.max-file-size=$MAX_FILE_SIZE \
  --webhook.poll-size=$WEBHOOK_POLL_SIZE \
  --webhook.timeout=$WEBHOOK_TIMEOUT \
- --webhook.url=$WEBHOOK_URL
+ --webhook.url=$WEBHOOK_URL \
+ $EXTRA_ARGS
