@@ -1,6 +1,6 @@
 package fun.wilddev.images.services;
 
-import fun.wilddev.images.exceptions.images.ImageException;
+import fun.wilddev.images.exceptions.files.FileException;
 import fun.wilddev.images.models.FileMeta;
 import fun.wilddev.images.processors.tasks.SourceImage;
 import fun.wilddev.images.services.editors.tools.BufferedImageTmpFileWriter;
@@ -31,20 +31,24 @@ public class ImageWriterService {
         return new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight());
     }
 
-    public void write(@NonNull SourceImage source, @NonNull BufferedImage bufferedImage) throws ImageException {
+    public void write(@NonNull SourceImage source, @NonNull BufferedImage bufferedImage) throws FileException {
 
         final FileMeta fileMeta = source.fileMeta();
 
         File tempFile = null;
 
         try {
-            tempFile = bufferedImageTmpFileWriter.write(bufferedImage,
+            tempFile = fileService.createTempFile();
+
+            bufferedImageTmpFileWriter.write(tempFile, bufferedImage,
                     imageService.getFormatName(fileMeta.contentType()));
 
             customizedImageService.store(tempFile, getDimension(bufferedImage), fileMeta);
 
         } finally {
-            fileService.delete(tempFile);
+
+            if (tempFile != null)
+                fileService.delete(tempFile);
         }
     }
 }
