@@ -20,12 +20,17 @@
 
 	<properties>
 		<java.version>20</java.version>
-		<wilddev.lib.version>1.0.0.RELEASE</wilddev.lib.version>
+		<wilddev.lib.core.ext.version>1.0.0.RELEASE</wilddev.lib.core.ext.version>
+		<wilddev.lib.web.ext.version>1.0.1.RELEASE</wilddev.lib.web.ext.version>
 	</properties>
 
 	<dependencies>
 
 		<!-- Starters -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
@@ -47,12 +52,12 @@
 		<dependency>
 			<groupId>fun.wilddev.lib</groupId>
 			<artifactId>spring-starter-core-ext</artifactId>
-			<version>${wilddev.lib.version}</version>
+			<version>${wilddev.lib.core.ext.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fun.wilddev.lib</groupId>
 			<artifactId>spring-starter-web-ext</artifactId>
-			<version>${wilddev.lib.version}</version>
+			<version>${wilddev.lib.web.ext.version}</version>
 		</dependency>
 
 		<!-- Dev -->
