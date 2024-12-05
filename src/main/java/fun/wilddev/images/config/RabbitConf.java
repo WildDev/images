@@ -219,13 +219,13 @@ public class RabbitConf {
     @Bean
     public Binding imagePollTickBinding() {
         return bindToExistingExchange(queueMappingProps.imagePollTick(),
-                routingKeyMappingProps.secondTick(), exchangeProps.scheduler());
+                routingKeyMappingProps.imagePollTick(), exchangeProps.scheduler());
     }
 
     @Bean
     public Binding imageGcTickBinding() {
         return bindToExistingExchange(queueMappingProps.imageGcTick(),
-                routingKeyMappingProps.minuteTick(), exchangeProps.scheduler());
+                routingKeyMappingProps.imageGcTick(), exchangeProps.scheduler());
     }
 
     @Bean
@@ -236,7 +236,7 @@ public class RabbitConf {
 
     @Bean
     public Binding defaultImagesDeadLetterBinding() {
-        return BindingBuilder.bind(defaultImagesQueue()).to(imageDeadLetterExchange())
+        return BindingBuilder.bind(defaultImagesDeadLetterQueue()).to(imageDeadLetterExchange())
                 .with(routingKeyMappingProps.defaultImages().name());
     }
 
@@ -248,20 +248,20 @@ public class RabbitConf {
 
     @Bean
     public Binding externalImagesDeadLetterBinding() {
-        return BindingBuilder.bind(externalImagesQueue()).to(imageDeadLetterExchange())
+        return BindingBuilder.bind(externalImagesQueueDeadLetter()).to(imageDeadLetterExchange())
                 .with(routingKeyMappingProps.externalImages().name());
     }
 
     @Bean
     public Binding webhookPollTickBinding() {
         return bindToExistingExchange(queueMappingProps.webhookPollTick(),
-                routingKeyMappingProps.secondTick(), exchangeProps.scheduler());
+                routingKeyMappingProps.webhookPollTick(), exchangeProps.scheduler());
     }
 
     @Bean
     public Binding webhookGcTickBinding() {
         return bindToExistingExchange(queueMappingProps.webhookGcTick(),
-                routingKeyMappingProps.minuteTick(), exchangeProps.scheduler());
+                routingKeyMappingProps.webhookGcTick(), exchangeProps.scheduler());
     }
 
     @Bean
