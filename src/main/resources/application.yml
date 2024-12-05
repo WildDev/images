@@ -63,9 +63,11 @@ spring:
     routing-key:
       default-images: images.default
       external-images: images.external
-      minute-tick: minute
-      second-tick: second
+      image-poll-tick: second
+      image-gc-tick: minute
       webhooks: webhooks
+      webhook-poll-tick: second
+      webhook-gc-tick: minute
   servlet:
     multipart:
       max-file-size: 10485760
