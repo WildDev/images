@@ -9,7 +9,16 @@ import java.awt.*;
 
 import lombok.*;
 import org.springframework.data.annotation.*;
+import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.*;
+
+@CompoundIndexes({
+        @CompoundIndex(name = "source_id_1_status_1_width_1_height_1",
+                def = "{ 'source_id': 1, 'status': 1, 'width': 1, 'height': 1 }"),
+        @CompoundIndex(name = "source_id_1_status_1_height_1",
+                def = "{ 'source_id': 1, 'status': 1, 'height': 1 }"),
+        @CompoundIndex(name = "status_1_expires_1", def = "{ 'status': 1, 'expires': 1 }")
+})
 
 @NoArgsConstructor
 @Setter
@@ -21,7 +30,7 @@ public class Image {
     @Id
     private String id;
 
-    @Field
+    @Field("source_url")
     private String sourceUrl;
 
     @Field
@@ -48,7 +57,7 @@ public class Image {
     @Field
     private LocalDateTime processed;
 
-    @Field(targetType = FieldType.OBJECT_ID)
+    @Field(name = "source_id", targetType = FieldType.OBJECT_ID)
     private String sourceId;
 
     private Image(ImageStatus status, Boolean multiSize, LocalDateTime added,
