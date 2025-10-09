@@ -3,14 +3,11 @@ package fun.wilddev.images.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.wilddev.images.config.rabbitmq.DeadLetterQueueNameFactory;
 
-import java.util.concurrent.TimeUnit;
-
 import org.aopalliance.aop.Advice;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.interceptor.StatefulRetryOperationsInterceptor;
-import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
 import fun.wilddev.images.config.props.*;
@@ -24,13 +21,13 @@ import org.springframework.context.annotation.*;
 @Configuration
 public class RabbitConf {
 
+    private final static long X_MAX_LENGTH = 100;
+
     private final ExchangeProps exchangeProps;
 
     private final QueueMappingProps queueMappingProps;
 
     private final RoutingKeyMappingProps routingKeyMappingProps;
-
-    private final DurationReader durationReader;
 
     private final String defaultImagesDeadLetterQueue;
 
@@ -41,13 +38,11 @@ public class RabbitConf {
     public RabbitConf(ExchangeProps exchangeProps,
                       QueueMappingProps queueMappingProps,
                       RoutingKeyMappingProps routingKeyMappingProps,
-                      DurationReader durationReader,
                       DeadLetterQueueNameFactory deadLetterQueueNameFactory) {
 
         this.exchangeProps = exchangeProps;
         this.queueMappingProps = queueMappingProps;
         this.routingKeyMappingProps = routingKeyMappingProps;
-        this.durationReader = durationReader;
 
         this.defaultImagesDeadLetterQueue = deadLetterQueueNameFactory.create(queueMappingProps.defaultImages());
         this.externalImagesDeadLetterQueue = deadLetterQueueNameFactory.create(queueMappingProps.externalImages());
@@ -69,10 +64,8 @@ public class RabbitConf {
 
     private SimpleRabbitListenerContainerFactory buildImageContainerFactory(ConnectionFactory connectionFactory,
                                                                             MessageConverter messageConverter,
-                                                                            ImageRecoverer imageRecoverer,
-                                                                            QueueProps queueProps) {
-        return buildContainerFactory(connectionFactory, messageConverter,
-                retryOperationsInterceptor(queueProps, imageRecoverer));
+                                                                            ImageRecoverer imageRecoverer) {
+        return buildContainerFactory(connectionFactory, messageConverter, retryOperationsInterceptor(imageRecoverer));
     }
 
     private Queue buildTickQueue(QueueProps queueProps) {
@@ -90,6 +83,12 @@ public class RabbitConf {
                 .build();
     }
 
+    private Queue buildDeadLetterQueue(String name) {
+        return QueueBuilder.durable(name)
+                .maxLength(X_MAX_LENGTH)
+                .build();
+    }
+
     private Binding bindToExistingExchange(QueueProps queueProps,
                                            RoutingKeyProps routingKeyProps,
                                            String exchange) {
@@ -98,41 +97,17 @@ public class RabbitConf {
                 exchange, routingKeyProps.name(), null);
     }
 
-    private long readRetryIntervalAsMillis(RetryProps retryProps) {
-
-        final DurationValue durationValue = durationReader.read(retryProps.interval());
-
-        TimeUnit timeUnit = durationValue.timeUnit();
-
-        if (timeUnit == TimeUnit.SECONDS)
-            return durationValue.value() * 1000;
-
-        throw new UnsupportedOperationException("Time unit '" + timeUnit + "' is not supported");
-    }
-
-    private FixedBackOffPolicy backOffPolicy(RetryProps retryProps) {
-
-        FixedBackOffPolicy policy = new FixedBackOffPolicy();
-        policy.setBackOffPeriod(readRetryIntervalAsMillis(retryProps));
-
-        return policy;
-    }
-
-    private RetryTemplate retryTemplate(QueueProps queueProps) {
+    private RetryTemplate retryTemplate() {
 
         RetryTemplate template = new RetryTemplate();
-        RetryProps retryProps = queueProps.retry();
-
-        template.setRetryPolicy(new SimpleRetryPolicy(retryProps.maxAttempts()));
-        template.setBackOffPolicy(backOffPolicy(retryProps));
+        template.setRetryPolicy(new NeverRetryPolicy());
 
         return template;
     }
 
-    private StatefulRetryOperationsInterceptor retryOperationsInterceptor(QueueProps queueProps,
-                                                                          Recoverer<?> recoverer) {
+    private StatefulRetryOperationsInterceptor retryOperationsInterceptor(Recoverer<?> recoverer) {
         return RetryInterceptorBuilder.stateful()
-                .retryOperations(retryTemplate(queueProps))
+                .retryOperations(retryTemplate())
                 .recoverer(recoverer)
                 .build();
     }
@@ -183,7 +158,7 @@ public class RabbitConf {
 
     @Bean
     public Queue defaultImagesDeadLetterQueue() {
-        return QueueBuilder.durable(defaultImagesDeadLetterQueue).build();
+        return buildDeadLetterQueue(defaultImagesDeadLetterQueue);
     }
 
     @Bean
@@ -192,8 +167,8 @@ public class RabbitConf {
     }
 
     @Bean
-    public Queue externalImagesQueueDeadLetter() {
-        return QueueBuilder.durable(externalImagesDeadLetterQueue).build();
+    public Queue externalImagesDeadLetterQueue() {
+        return buildDeadLetterQueue(externalImagesDeadLetterQueue);
     }
 
     @Bean
@@ -213,7 +188,7 @@ public class RabbitConf {
 
     @Bean
     public Queue webhooksDeadLetterQueue() {
-        return QueueBuilder.durable(webhooksDeadLetterQueue).build();
+        return buildDeadLetterQueue(webhooksDeadLetterQueue);
     }
 
     @Bean
@@ -248,7 +223,7 @@ public class RabbitConf {
 
     @Bean
     public Binding externalImagesDeadLetterBinding() {
-        return BindingBuilder.bind(externalImagesQueueDeadLetter()).to(imageDeadLetterExchange())
+        return BindingBuilder.bind(externalImagesDeadLetterQueue()).to(imageDeadLetterExchange())
                 .with(routingKeyMappingProps.externalImages().name());
     }
 
@@ -281,8 +256,7 @@ public class RabbitConf {
             ConnectionFactory connectionFactory, MessageConverter messageConverter,
             ImageRecoverer imageRecoverer) {
 
-        return buildImageContainerFactory(connectionFactory, messageConverter,
-                imageRecoverer, queueMappingProps.defaultImages());
+        return buildImageContainerFactory(connectionFactory, messageConverter, imageRecoverer);
     }
 
     @Bean
@@ -290,8 +264,7 @@ public class RabbitConf {
             ConnectionFactory connectionFactory, MessageConverter messageConverter,
             ImageRecoverer imageRecoverer) {
 
-        return buildImageContainerFactory(connectionFactory, messageConverter,
-                imageRecoverer, queueMappingProps.externalImages());
+        return buildImageContainerFactory(connectionFactory, messageConverter, imageRecoverer);
     }
 
     @Bean
@@ -300,6 +273,6 @@ public class RabbitConf {
             WebhookRecoverer webhookRecoverer) {
 
         return buildContainerFactory(connectionFactory, messageConverter,
-                retryOperationsInterceptor(queueMappingProps.webhooks(), webhookRecoverer));
+                retryOperationsInterceptor(webhookRecoverer));
     }
 }
