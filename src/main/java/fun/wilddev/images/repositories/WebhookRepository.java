@@ -22,4 +22,8 @@ public interface WebhookRepository extends MongoRepository<Webhook, String> {
 
     @Update("{ $set: { 'status': ?2 } }")
     long findAndSetExpiredByStatusAndExpiresBefore(WebhookStatus status, LocalDateTime bound, WebhookStatus target);
+
+    // meta.image_id +
+    @DeleteQuery("{ 'meta.image_id': { $oid: ?0 } }")
+    long deleteByMetaImageId(String imageId);
 }

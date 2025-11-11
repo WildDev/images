@@ -35,6 +35,8 @@ public class RabbitConf {
 
     private final String webhooksDeadLetterQueue;
 
+    private final String imageRemovalDeadLetterQueue;
+
     public RabbitConf(ExchangeProps exchangeProps,
                       QueueMappingProps queueMappingProps,
                       RoutingKeyMappingProps routingKeyMappingProps,
@@ -47,6 +49,7 @@ public class RabbitConf {
         this.defaultImagesDeadLetterQueue = deadLetterQueueNameFactory.create(queueMappingProps.defaultImages());
         this.externalImagesDeadLetterQueue = deadLetterQueueNameFactory.create(queueMappingProps.externalImages());
         this.webhooksDeadLetterQueue = deadLetterQueueNameFactory.create(queueMappingProps.webhooks());
+        this.imageRemovalDeadLetterQueue = deadLetterQueueNameFactory.create(queueMappingProps.imageRemoval());
     }
 
     private SimpleRabbitListenerContainerFactory buildContainerFactory(ConnectionFactory connectionFactory,
@@ -122,133 +125,155 @@ public class RabbitConf {
     }
 
     @Bean
-    public TopicExchange imageExchange() {
+    public TopicExchange rabbitImageExchange() {
         return new TopicExchange(exchangeProps.image());
     }
 
     @Bean
-    public TopicExchange imageDeadLetterExchange() {
+    public TopicExchange rabbitImageDeadLetterExchange() {
         return new TopicExchange(exchangeProps.imageDeadLetter());
     }
 
     @Bean
-    public DirectExchange webhookExchange() {
+    public DirectExchange rabbitWebhookExchange() {
         return new DirectExchange(exchangeProps.webhook());
     }
 
     @Bean
-    public DirectExchange webhookDeadLetterExchange() {
+    public DirectExchange rabbitWebhookDeadLetterExchange() {
         return new DirectExchange(exchangeProps.webhookDeadLetter());
     }
 
     @Bean
-    public Queue imagePollTickQueue() {
+    public Queue rabbitImagePollTickQueue() {
         return buildTickQueue(queueMappingProps.imagePollTick());
     }
 
     @Bean
-    public Queue imageGcTickQueue() {
+    public Queue rabbitImageGcTickQueue() {
         return buildTickQueue(queueMappingProps.imageGcTick());
     }
 
     @Bean
-    public Queue defaultImagesQueue() {
+    public Queue rabbitDefaultImagesQueue() {
         return buildClassicQueue(queueMappingProps.defaultImages(), exchangeProps.imageDeadLetter());
     }
 
     @Bean
-    public Queue defaultImagesDeadLetterQueue() {
+    public Queue rabbitDefaultImagesDeadLetterQueue() {
         return buildDeadLetterQueue(defaultImagesDeadLetterQueue);
     }
 
     @Bean
-    public Queue externalImagesQueue() {
+    public Queue rabbitExternalImagesQueue() {
         return buildClassicQueue(queueMappingProps.externalImages(), exchangeProps.imageDeadLetter());
     }
 
     @Bean
-    public Queue externalImagesDeadLetterQueue() {
+    public Queue rabbitExternalImagesDeadLetterQueue() {
         return buildDeadLetterQueue(externalImagesDeadLetterQueue);
     }
 
     @Bean
-    public Queue webhookPollTickQueue() {
+    public Queue rabbitWebhookPollTickQueue() {
         return buildTickQueue(queueMappingProps.webhookPollTick());
     }
 
     @Bean
-    public Queue webhookGcTickQueue() {
+    public Queue rabbitWebhookGcTickQueue() {
         return buildTickQueue(queueMappingProps.webhookGcTick());
     }
 
     @Bean
-    public Queue webhooksQueue() {
+    public Queue rabbitWebhooksQueue() {
         return buildClassicQueue(queueMappingProps.webhooks(), exchangeProps.webhookDeadLetter());
     }
 
     @Bean
-    public Queue webhooksDeadLetterQueue() {
+    public Queue rabbitWebhooksDeadLetterQueue() {
         return buildDeadLetterQueue(webhooksDeadLetterQueue);
     }
 
     @Bean
-    public Binding imagePollTickBinding() {
+    public Queue rabbitImageRemovalQueue() {
+        return buildClassicQueue(queueMappingProps.imageRemoval(), exchangeProps.imageDeadLetter());
+    }
+
+    @Bean
+    public Queue rabbitImageRemovalDeadLetterQueue() {
+        return buildDeadLetterQueue(imageRemovalDeadLetterQueue);
+    }
+
+    @Bean
+    public Binding rabbitImagePollTickBinding() {
         return bindToExistingExchange(queueMappingProps.imagePollTick(),
                 routingKeyMappingProps.imagePollTick(), exchangeProps.scheduler());
     }
 
     @Bean
-    public Binding imageGcTickBinding() {
+    public Binding rabbitImageGcTickBinding() {
         return bindToExistingExchange(queueMappingProps.imageGcTick(),
                 routingKeyMappingProps.imageGcTick(), exchangeProps.scheduler());
     }
 
     @Bean
-    public Binding defaultImagesBinding() {
-        return BindingBuilder.bind(defaultImagesQueue()).to(imageExchange())
+    public Binding rabbitDefaultImagesBinding() {
+        return BindingBuilder.bind(rabbitDefaultImagesQueue()).to(rabbitImageExchange())
                 .with(routingKeyMappingProps.defaultImages().name());
     }
 
     @Bean
-    public Binding defaultImagesDeadLetterBinding() {
-        return BindingBuilder.bind(defaultImagesDeadLetterQueue()).to(imageDeadLetterExchange())
+    public Binding rabbitDefaultImagesDeadLetterBinding() {
+        return BindingBuilder.bind(rabbitDefaultImagesDeadLetterQueue()).to(rabbitImageDeadLetterExchange())
                 .with(routingKeyMappingProps.defaultImages().name());
     }
 
     @Bean
-    public Binding externalImagesBinding() {
-        return BindingBuilder.bind(externalImagesQueue()).to(imageExchange())
+    public Binding rabbitExternalImagesBinding() {
+        return BindingBuilder.bind(rabbitExternalImagesQueue()).to(rabbitImageExchange())
                 .with(routingKeyMappingProps.externalImages().name());
     }
 
     @Bean
     public Binding externalImagesDeadLetterBinding() {
-        return BindingBuilder.bind(externalImagesDeadLetterQueue()).to(imageDeadLetterExchange())
+        return BindingBuilder.bind(rabbitExternalImagesDeadLetterQueue()).to(rabbitImageDeadLetterExchange())
                 .with(routingKeyMappingProps.externalImages().name());
     }
 
     @Bean
-    public Binding webhookPollTickBinding() {
+    public Binding rabbitWebhookPollTickBinding() {
         return bindToExistingExchange(queueMappingProps.webhookPollTick(),
                 routingKeyMappingProps.webhookPollTick(), exchangeProps.scheduler());
     }
 
     @Bean
-    public Binding webhookGcTickBinding() {
+    public Binding rabbitWebhookGcTickBinding() {
         return bindToExistingExchange(queueMappingProps.webhookGcTick(),
                 routingKeyMappingProps.webhookGcTick(), exchangeProps.scheduler());
     }
 
     @Bean
-    public Binding webhooksBinding() {
-        return BindingBuilder.bind(webhooksQueue()).to(webhookExchange())
+    public Binding rabbitWebhooksBinding() {
+        return BindingBuilder.bind(rabbitWebhooksQueue()).to(rabbitWebhookExchange())
                 .with(routingKeyMappingProps.webhooks().name());
     }
 
     @Bean
-    public Binding webhooksDeadLetterBinding() {
-        return BindingBuilder.bind(webhooksDeadLetterQueue()).to(webhookDeadLetterExchange())
+    public Binding rabbitWebhooksDeadLetterBinding() {
+        return BindingBuilder.bind(rabbitWebhooksDeadLetterQueue()).to(rabbitWebhookDeadLetterExchange())
                 .with(routingKeyMappingProps.webhooks().name());
+    }
+
+    @Bean
+    public Binding rabbitImageRemovalBinding() {
+        return BindingBuilder.bind(rabbitImageRemovalQueue()).to(rabbitImageExchange())
+                .with(routingKeyMappingProps.imageRemoval().name());
+    }
+
+    @Bean
+    public Binding rabbitImageRemovalDeadLetterBinding() {
+        return BindingBuilder.bind(rabbitImageRemovalDeadLetterQueue()).to(rabbitImageDeadLetterExchange())
+                .with(routingKeyMappingProps.imageRemoval().name());
     }
 
     @Bean
@@ -265,6 +290,12 @@ public class RabbitConf {
             ImageRecoverer imageRecoverer) {
 
         return buildImageContainerFactory(connectionFactory, messageConverter, imageRecoverer);
+    }
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory imageRabbitListenerContainerFactory(
+            ConnectionFactory connectionFactory, MessageConverter messageConverter) {
+        return buildContainerFactory(connectionFactory, messageConverter, (Advice[]) null);
     }
 
     @Bean

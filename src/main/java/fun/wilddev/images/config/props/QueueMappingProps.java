@@ -9,6 +9,7 @@ public record QueueMappingProps(QueueProps imagePollTick,
                                 QueueProps externalImages,
                                 QueueProps webhookPollTick,
                                 QueueProps webhookGcTick,
-                                QueueProps webhooks) {
+                                QueueProps webhooks,
+                                QueueProps imageRemoval) {
 
 }

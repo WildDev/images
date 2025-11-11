@@ -1,6 +1,5 @@
 package fun.wilddev.images.services;
 
-import com.mongodb.client.gridfs.model.GridFSFile;
 import fun.wilddev.spring.core.services.MessageService;
 
 import lombok.AllArgsConstructor;
@@ -26,9 +25,7 @@ public class GridFsService {
     }
 
     public GridFsResource findById(@NonNull String id) {
-
-        GridFSFile file = gridFsTemplate.findOne(getFilenameQuery(id));
-        return file == null ? null : gridFsTemplate.getResource(file);
+        return gridFsTemplate.getResource(gridFsTemplate.findOne(getFilenameQuery(id)));
     }
 
     public void store(@NonNull String id, @NonNull String contentType, @NonNull InputStream inputStream) {

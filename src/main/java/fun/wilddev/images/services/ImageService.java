@@ -174,6 +174,11 @@ public class ImageService implements Slicer<Image> {
     }
 
     @Transactional
+    public void delete(@NonNull String id) {
+        imageRepository.deleteById(id);
+    }
+
+    @Transactional
     public void collectExpired(@NonNull LocalDateTime bound) {
 
         log.info("{} records were expired", imageRepository

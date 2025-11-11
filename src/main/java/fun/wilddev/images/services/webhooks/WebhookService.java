@@ -74,6 +74,11 @@ public class WebhookService implements Slicer<Webhook>, FailureSetter {
     }
 
     @Transactional
+    public void deleteByImageId(@NonNull String imageId) {
+        log.debug("{} images deleted", webhookRepository.deleteByMetaImageId(imageId));
+    }
+
+    @Transactional
     public void collectExpired(@NonNull LocalDateTime bound) {
 
         log.info("{} records were expired", webhookRepository

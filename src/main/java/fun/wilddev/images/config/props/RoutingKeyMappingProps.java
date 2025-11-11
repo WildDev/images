@@ -9,6 +9,7 @@ public record RoutingKeyMappingProps(RoutingKeyProps defaultImages,
                                      RoutingKeyProps imageGcTick,
                                      RoutingKeyProps webhooks,
                                      RoutingKeyProps webhookPollTick,
-                                     RoutingKeyProps webhookGcTick) {
+                                     RoutingKeyProps webhookGcTick,
+                                     RoutingKeyProps imageRemoval) {
 
 }

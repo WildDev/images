@@ -41,6 +41,13 @@ spring:
         retry:
           max-attempts: ${default.rabbitmq.retry.max-attempts}
           interval: ${default.rabbitmq.retry.interval}
+      image-removal:
+        name: image-removal
+        concurrency: ${default.rabbitmq.concurrency}
+        ttl: ${default.rabbitmq.ttl}
+        retry:
+          max-attempts: ${default.rabbitmq.retry.max-attempts}
+          interval: ${default.rabbitmq.retry.interval}
       image-poll-tick:
         name: image-poll-tick
         max-length: ${default.rabbitmq.poll.max-length}
@@ -68,6 +75,7 @@ spring:
       webhooks: webhooks
       webhook-poll-tick: second
       webhook-gc-tick: minute
+      image-removal: image-removal
   servlet:
     multipart:
       max-file-size: 10485760

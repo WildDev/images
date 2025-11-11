@@ -1,6 +1,7 @@
 package fun.wilddev.images.controllers;
 
 import fun.wilddev.images.controllers.responses.ID;
+import fun.wilddev.images.processors.ImageRemovalProcessor;
 import fun.wilddev.images.validators.ImageUploadRequestValidator;
 import fun.wilddev.spring.web.controllers.AbstractController;
 import fun.wilddev.spring.web.mappers.MultiValueMapper;
@@ -15,7 +16,9 @@ import org.springframework.validation.Errors;
 
 import fun.wilddev.images.controllers.requests.*;
 import fun.wilddev.images.services.*;
+
 import java.util.*;
+
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +33,8 @@ public class ImageController extends AbstractController {
     private final ImageService imageService;
 
     private final ImageLoadingService imageLoadingService;
+
+    private final ImageRemovalProcessor imageRemovalProcessor;
 
     private final MultiValueMapper multiValueMapper;
 
@@ -68,5 +73,15 @@ public class ImageController extends AbstractController {
 
         return resource == null ? notFound() : ok(resource, multiValueMapper
                 .map(Map.of(HttpHeaders.CONTENT_TYPE, resource.getContentType())));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@Valid @RequestBody ImageDeleteRequest request, Errors errors) {
+
+        if (errors.hasErrors())
+            return badRequest(errors);
+
+        imageRemovalProcessor.process(request.getId());
+        return ok();
     }
 }

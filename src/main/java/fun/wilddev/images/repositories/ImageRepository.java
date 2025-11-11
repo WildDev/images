@@ -24,6 +24,8 @@ public interface ImageRepository extends MongoRepository<Image, String> {
     // source_id_1_status_1_width_1_height_1 +
     Optional<Image> findBySourceIdAndStatusAndWidthAndHeight(String id, ImageStatus status,
                                                              Integer width, Integer height);
+    // source_id +
+    List<Image> findBySourceId(String sourceId);
 
     List<Image> findBySourceIdAndStatusAndWidth(String id, ImageStatus status, Integer width);
 
