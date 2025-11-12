@@ -19,6 +19,9 @@ spring:
   cors:
     allow-credentials: true
     allowed-methods: GET, POST, OPTIONS
+  data:
+    mongodb:
+      auto-index-creation: true
   rabbitmq:
     exchange:
       image: images
