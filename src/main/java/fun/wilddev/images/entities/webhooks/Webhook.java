@@ -1,17 +1,17 @@
 package fun.wilddev.images.entities.webhooks;
 
 import fun.wilddev.images.entities.webhooks.meta.WebhookMeta;
-
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
 
 import fun.wilddev.images.enums.*;
 import lombok.*;
+import org.springframework.data.mongodb.core.index.*;
 import org.springframework.data.mongodb.core.mapping.*;
 
 @CompoundIndex(name = "status_1_expires_1", def = "{ 'status': 1, 'expires': 1 }")
+@CompoundIndex(name = "meta.image_id_1", def = "{ 'meta.image_id': 1 }")
 
 @NoArgsConstructor
 @Setter
