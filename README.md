@@ -68,3 +68,14 @@ java -jar -Xmx512M target/images.jar \
 > The service is unprotected by default! Ensure the only accessor endpoint is publicly available and your proxy server is properly configured
 
 Also available on [Docker Hub](https://hub.docker.com/r/wilddev/images)
+
+### License
+
+*This project is licensed under the Apache License 2.0.*
+
+Dependencies:
+
+- Spring Boot (Apache 2.0)
+- Lombok (MIT)
+
+See [LICENSE](LICENSE) and [NOTICE](NOTICE) files for details.
