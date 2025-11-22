@@ -61,6 +61,7 @@ public class RabbitConf {
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(messageConverter);
         factory.setAdviceChain(adviceChain);
+        factory.setDefaultRequeueRejected(false);
 
         return factory;
     }
