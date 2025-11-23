@@ -20,6 +20,7 @@
 
 	<properties>
 		<java.version>20</java.version>
+        <imgscalr.version>4.2</imgscalr.version>
 		<wilddev.lib.core.ext.version>1.0.0.RELEASE</wilddev.lib.core.ext.version>
 		<wilddev.lib.web.ext.version>1.0.1.RELEASE</wilddev.lib.web.ext.version>
 	</properties>
@@ -67,6 +68,13 @@
 			<artifactId>spring-starter-web-ext</artifactId>
 			<version>${wilddev.lib.web.ext.version}</version>
 		</dependency>
+
+        <!-- Lib -->
+        <dependency>
+            <groupId>org.imgscalr</groupId>
+            <artifactId>imgscalr-lib</artifactId>
+            <version>${imgscalr.version}</version>
+        </dependency>
 
 		<!-- Dev -->
 		<dependency>

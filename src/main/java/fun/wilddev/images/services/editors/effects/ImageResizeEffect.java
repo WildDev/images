@@ -4,7 +4,7 @@ import fun.wilddev.images.entities.settings.ResizeSize;
 import fun.wilddev.images.exceptions.files.FileException;
 import fun.wilddev.images.processors.tasks.SourceImage;
 import fun.wilddev.images.services.ImageWriterService;
-import fun.wilddev.images.services.editors.tools.ImageResizer;
+import fun.wilddev.images.services.editors.tools.resizer.ImageResizer;
 
 import java.awt.image.BufferedImage;
 import java.util.Objects;

@@ -2,7 +2,7 @@ package fun.wilddev.images.services.editors.effects;
 
 import fun.wilddev.images.entities.settings.AbstractSize;
 import fun.wilddev.images.services.ImageWriterService;
-import fun.wilddev.images.services.editors.tools.ImageResizer;
+import fun.wilddev.images.services.editors.tools.resizer.ImageResizer;
 
 import lombok.AllArgsConstructor;
 

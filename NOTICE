@@ -1,4 +1,5 @@
 This product includes software developed by the following projects:
 
 - Spring Boot (Apache License 2.0) - https://spring.io/projects/spring-boot
+- Imgscalr (Apache License 2.0) - https://github.com/rkalla/imgscalr
 - Lombok (MIT License) - https://projectlombok.org

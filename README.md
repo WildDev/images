@@ -76,6 +76,7 @@ Also available on [Docker Hub](https://hub.docker.com/r/wilddev/images)
 Dependencies:
 
 - Spring Boot (Apache 2.0)
+- Imgscalr (Apache 2.0)
 - Lombok (MIT)
 
 See [LICENSE](LICENSE) and [NOTICE](NOTICE) files for details.

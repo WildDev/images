@@ -1,15 +1,13 @@
-package fun.wilddev.images.services.editors.tools;
+package fun.wilddev.images.services.editors.tools.resizer;
 
 import java.awt.image.BufferedImage;
-
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Component;
 
 import java.awt.*;
 
-@Component
-public class ImageResizer {
+public class DefaultImageResizer implements ImageResizer {
 
+    @Override
     public BufferedImage resize(@NonNull BufferedImage source, @NonNull Dimension target) {
 
         final int targetWidth = (int) target.getWidth();
