@@ -22,10 +22,10 @@ https://test.website/images/find/650f35128d400f39c6a46ee2?width=1024
 ###### Original image (109.31KB):
 ![Original image](src/main/resources/images/sample.jpg)
 
-###### [Resize] Width 320px (16.88KB)
+###### [Resize] Width 320px (13.86KB)
 ![Width 320px](src/main/resources/images/width320.jpg)
 
-###### [Crop] Width 320px & ratio 1.35 (18.28KB)
+###### [Crop] Width 320px & ratio 1.35 (15.23KB)
 ![Crop to ratio 1.35](src/main/resources/images/ratio1.35.jpg)
 
 
