@@ -75,6 +75,7 @@ public class RabbitConf {
     private Queue buildTickQueue(QueueProps queueProps) {
 
         return QueueBuilder.nonDurable(queueProps.name())
+                .withArgument("x-single-active-consumer", true)
                 .withArgument("x-max-length", queueProps.maxLength())
                 .build();
     }
