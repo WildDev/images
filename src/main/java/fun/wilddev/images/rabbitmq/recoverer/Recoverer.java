@@ -49,7 +49,7 @@ public abstract class Recoverer<T extends RefData> extends RejectAndDontRequeueR
             JavaType targetJavaType = jackson2JavaTypeMapper.toJavaType(props);
             Object o = objectMapper.readValue(message.getBody(), targetJavaType);
 
-            if (o != null && o.getClass().isAssignableFrom(type)) {
+            if (o != null && type.isAssignableFrom(o.getClass())) {
 
                 final T ref = type.cast(o);
                 final String id = ref.getId();

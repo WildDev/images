@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.wilddev.images.config.rabbitmq.DeadLetterQueueNameFactory;
 
 import org.aopalliance.aop.Advice;
+import org.aopalliance.intercept.MethodInterceptor;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.retry.interceptor.StatefulRetryOperationsInterceptor;
 import org.springframework.retry.policy.NeverRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
 
 import fun.wilddev.images.config.props.*;
 import fun.wilddev.images.rabbitmq.recoverer.*;
@@ -102,17 +101,9 @@ public class RabbitConf {
                 exchange, routingKeyProps.name(), null);
     }
 
-    private RetryTemplate retryTemplate() {
-
-        RetryTemplate template = new RetryTemplate();
-        template.setRetryPolicy(new NeverRetryPolicy());
-
-        return template;
-    }
-
-    private StatefulRetryOperationsInterceptor retryOperationsInterceptor(Recoverer<?> recoverer) {
-        return RetryInterceptorBuilder.stateful()
-                .retryOperations(retryTemplate())
+    private MethodInterceptor retryOperationsInterceptor(Recoverer<?> recoverer) {
+        return RetryInterceptorBuilder.stateless()
+                .retryPolicy(new NeverRetryPolicy())
                 .recoverer(recoverer)
                 .build();
     }
