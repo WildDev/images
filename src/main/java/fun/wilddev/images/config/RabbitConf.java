@@ -22,6 +22,8 @@ public class RabbitConf {
 
     private final static long X_MAX_LENGTH = 100;
 
+    private final static int X_MESSAGE_TTL = 86_400_000;
+
     private final ExchangeProps exchangeProps;
 
     private final QueueMappingProps queueMappingProps;
@@ -90,6 +92,7 @@ public class RabbitConf {
     private Queue buildDeadLetterQueue(String name) {
         return QueueBuilder.durable(name)
                 .maxLength(X_MAX_LENGTH)
+                .ttl(X_MESSAGE_TTL)
                 .build();
     }
 
