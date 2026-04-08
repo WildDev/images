@@ -1,0 +1,79 @@
+FROM maven:3.9.4-eclipse-temurin-20 as build
+
+MAINTAINER https://github.com/WildDev
+
+COPY . /
+RUN --mount=type=cache,target=$MAVEN_CONFIG mvn clean package -P native
+
+FROM ubuntu:24.10 as graalvm
+
+SHELL [ "/bin/bash", "-c" ]
+
+ARG dist=graalvm-jdk-24_linux-x64_bin.tar.gz
+ARG artifact_dir=/artifact/
+ARG graalvm_dir=/graalvm/
+
+ADD https://download.oracle.com/graalvm/24/latest/${dist} /
+
+RUN apt-get update && apt-get install -y build-essential zlib1g-dev unzip
+RUN mkdir ${graalvm_dir}
+RUN tar -xzvf ${dist} --strip=1 -C ${graalvm_dir}
+
+COPY --from=build /target/images.jar ${artifact_dir}
+
+WORKDIR ${artifact_dir}images
+
+RUN unzip ../images.jar
+RUN ${graalvm_dir}/bin/native-image -H:-AddAllFileSystemProviders -cp BOOT-INF/classes:`find BOOT-INF/lib | tr '\n' ':'` --gc=G1 -o app
+
+FROM ubuntu:24.10
+
+ENV ALLOWED_IMAGES=JPEG,PNG,WEBP
+ENV ALLOWED_ORIGINS=http://localhost
+ENV IMAGE_POLL_SIZE=100
+ENV IMAGE_TIMEOUT=10m
+ENV JAVA_OPTS='-Xms32M -Xmx512M'
+ENV MAX_FILE_SIZE=10485760
+ENV MONGODB_HOST=mongodb
+ENV MONGODB_PORT=27017
+ENV MONGODB_DATABASE=images
+ENV MONGODB_USER=images
+ENV MONGODB_PASS=test
+ENV MONGODB_URI=''
+ENV RABBIT_HOST=rabbitmq
+ENV RABBIT_USER=images
+ENV RABBIT_PASS=test
+ENV RABBIT_PORT=5672
+ENV RABBIT_VHOST=/
+ENV SERVER_PORT=8080
+ENV TASKS=CROP,RESIZE
+ENV WEBHOOK_POLL_SIZE=100
+ENV WEBHOOK_TIMEOUT=10m
+ENV WEBHOOK_URL=''
+
+COPY --from=graalvm /artifact/images/app /
+
+ENTRYPOINT /app \
+$JAVA_OPTS \
+ --image.allowed-types=$ALLOWED_IMAGES \
+ --image.poll-size=$IMAGE_POLL_SIZE \
+ --image.processor.tasks=$TASKS \
+ --image.timeout=$IMAGE_TIMEOUT \
+ --server.port=$SERVER_PORT \
+ --spring.cors.allowed-origins=$ALLOWED_ORIGINS \
+ --spring.data.mongodb.host=$MONGODB_HOST \
+ --spring.data.mongodb.port=$MONGODB_PORT \
+ --spring.data.mongodb.database=$MONGODB_DATABASE \
+ --spring.data.mongodb.username=$MONGODB_USER \
+ --spring.data.mongodb.password=$MONGODB_PASS \
+ --spring.data.mongodb.uri=$MONGODB_URI \
+ --spring.rabbitmq.host=$RABBIT_HOST \
+ --spring.rabbitmq.port=$RABBIT_PORT \
+ --spring.rabbitmq.username=$RABBIT_USER \
+ --spring.rabbitmq.password=$RABBIT_PASS \
+ --spring.rabbitmq.virtual-host=$RABBIT_VHOST \
+ --spring.servlet.multipart.max-file-size=$MAX_FILE_SIZE \
+ --webhook.poll-size=$WEBHOOK_POLL_SIZE \
+ --webhook.timeout=$WEBHOOK_TIMEOUT \
+ --webhook.url=$WEBHOOK_URL \
+$EXTRA_ARGS
